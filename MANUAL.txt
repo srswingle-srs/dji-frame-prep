@@ -1,0 +1,133 @@
+============================================
+  DJI Frame Prep
+  Quick Start Manual
+============================================
+
+WHAT THIS TOOL DOES
+-------------------
+Takes your DJI drone video recordings and turns them into
+geotagged photos ready to import into WebODM for creating
+orthomosaic maps (like satellite view of a roof).
+
+Your drone saves video as .MP4 files with matching .SRT files
+that contain GPS coordinates. This tool:
+  1. Reads your video files and GPS data
+  2. Extracts evenly-spaced still frames from the video
+  3. Tags each frame with its GPS location
+  4. Writes a geo.txt file that WebODM understands
+  5. Filters out takeoff/landing frames automatically
+
+
+STEP BY STEP
+------------
+1. Double-click run.bat
+   - First time: it will install any missing software automatically
+   - If it asks you to restart, close the window and double-click again
+
+2. Click "Select DJI Folder"
+   - Pick the folder where your .MP4 and .SRT files are
+   - The tool scans and shows your flights in the tree on the left
+
+3. Check your settings (right side)
+   - Flight Pattern: pick how you flew
+     * Crosshatch = flew in two directions (grid pattern)
+     * Lawnmower = flew in one direction (back and forth rows)
+   - Mapping Height: auto-detected, usually correct as-is
+   - Altitude filter: leave ON to remove takeoff/landing frames
+
+4. Click "Preview" to see estimated frame count and file size
+
+5. Click "Run" (or press Enter)
+   - Wait for extraction to finish (may take several minutes)
+   - Progress shows in the log area at bottom
+
+6. When done, click "Open Output Folder"
+   - You'll find your frames (.jpg files) and geo.txt inside
+   - Import this folder into WebODM
+
+
+SETTINGS EXPLAINED
+------------------
+Flight Pattern:
+  Tells the tool how densely to extract frames.
+  Crosshatch flights have built-in overlap, so fewer frames needed.
+  Lawnmower flights need more frames for good coverage.
+
+Mapping Height (m):
+  The altitude your drone flew at during the mapping pass.
+  Auto-detected from GPS data. You can type a different value
+  if you know your planned flight height.
+
+Altitude Filter (checkbox):
+  When ON, throws out frames from takeoff, landing, and transit.
+  Those frames are at the wrong altitude and hurt the 3D model.
+  Rejected frames go to a "rejected" subfolder (not deleted).
+
+ADVANCED SETTINGS (click to expand):
+
+  Frame Interval (sec):
+    How many seconds between each extracted frame.
+    Smaller number = more frames = bigger output = longer processing.
+    Set automatically by Flight Pattern, but you can change it.
+
+  Altitude Band (+/- m):
+    How much altitude variation to allow around the mapping height.
+    Default is 5 meters. If your flight was at 12m, this keeps
+    frames from 7m to 17m and rejects everything else.
+
+  Altitude Source:
+    rel_alt (default) = height above where the drone took off.
+    abs_alt = height above sea level. Only use if your workflow
+    specifically needs sea-level altitudes.
+
+  JPEG Quality (1-31):
+    Lower number = better quality = larger files.
+    Default 2 is recommended for photogrammetry.
+    Don't go above 5 unless you need to save disk space.
+
+
+OUTPUT FILES
+------------
+After a successful run, your output folder contains:
+
+  group_flight1/          - Folder with all extracted frames
+    *.jpg                 - The geotagged frame images
+    geo.txt               - GPS coordinates for WebODM
+    rejected/             - Frames removed by altitude filter
+  flight_pattern.txt      - Note about which pattern was used
+  manifest.json           - Full record of settings and results
+
+
+TROUBLESHOOTING
+---------------
+"Run button is grayed out"
+  -> ffmpeg is not installed. Close the app, run: winget install ffmpeg
+     Then restart.
+
+"No usable DJI segments found"
+  -> Make sure you selected the folder with .MP4 AND .SRT files.
+     Both must be present for each video segment.
+
+"Extraction Error" popup
+  -> Check the error_log.txt file next to gui.py for details.
+
+App doesn't start at all
+  -> Check error_log.txt. Usually means Python or PyQt6 is missing.
+     Run: pip install PyQt6
+
+Frames look blurry
+  -> Lower the JPEG Quality number (try 1 for best quality).
+
+Too many / too few frames
+  -> Adjust the Frame Interval in Advanced Settings.
+     Shorter interval = more frames. Longer = fewer.
+
+
+REQUIREMENTS
+------------
+  - Windows 10 or 11
+  - Python 3.8 or newer
+  - ffmpeg (for video frame extraction)
+  - PyQt6 (installed automatically)
+
+All of these are installed automatically by run.bat if missing.
