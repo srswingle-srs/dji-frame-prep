@@ -1,0 +1,6 @@
+# DJI Frame Prep — Python dependencies
+# ffmpeg is NOT a pip package. Install it separately:
+#   winget install ffmpeg
+# (run.bat handles this automatically on first launch)
+
+PyQt6>=6.5
