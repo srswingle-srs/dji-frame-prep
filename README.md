@@ -6,6 +6,11 @@ DJI Frame Prep reads your drone's `.MP4` recordings and their matching `.SRT` GP
 
 If you fly a roof or a parcel and want a clean, satellite-style orthomosaic out the other side, this gets your imagery into WebODM without hand-tagging anything.
 
+> **Drone compatibility:** Tested with DJI drones whose `.SRT` telemetry
+> includes `latitude`, `longitude`, `rel_alt`, and `abs_alt` fields. Other
+> DJI models or firmware may write a different SRT layout — if you get
+> "no valid GPS fixes," your SRT format likely differs.
+
 ---
 
 ## Features
@@ -102,7 +107,7 @@ Import the `group_flight1/` folder into WebODM to build your orthomosaic.
 | **App doesn't start at all** | Check `error_log.txt`. Usually Python or PyQt6 is missing — run `pip install PyQt6`. |
 | **Frames look blurry** | Lower the JPEG Quality number (try `1` for best quality). |
 | **Too many / too few frames** | Adjust the Frame Interval in Advanced Settings. Shorter = more frames, longer = fewer. |
-
+| **"SRT has no valid GPS fixes"** | Your drone's SRT format isn't recognized. This tool expects `latitude`/`longitude`/`rel_alt`/`abs_alt` fields. Open a `.SRT` file in Notepad to check — if the layout differs, open an issue with a sample. |
 ---
 
 ## How it works
